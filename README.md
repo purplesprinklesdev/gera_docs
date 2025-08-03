@@ -57,6 +57,8 @@ Set db = CurrentDb()
 
     For Each td In db.TableDefs 'Tables
         If td.Name <> "tblStudentEmployabilityData" And td.Name <> "vwStudentClassAverage" And td.Name <> "StudentDemographic" And td.Name <> "StudentDiscipline" And td.Name <> "StudentDailyAbsence" Then GoTo Continue:
+        If td.Name = "tblStudentEmployabilityData" Then td.Name = "StudentEmployabilityData"
+
         If Left(td.Name, 4) <> "MSys" Then
             DoCmd.TransferText acExportDelim, , td.Name, sExportLocation & "\" & td.Name & ".csv", True
         End If
