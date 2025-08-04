@@ -114,7 +114,7 @@ GERA creates and deletes lots of temporary files in the workspace directory whil
 
 If any of the following icons below show up next to your folder, then it is being backed up by OneDrive and should **not** be used with GERA.
 
-<img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/onedriveicons.jpg" width="120">
+<img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/onedriveicons.jpg" width="380">
 
 If, for example, your desired workspace folder is in the `Documents` folder but is syncing with OneDrive, you may be at the path:
 
