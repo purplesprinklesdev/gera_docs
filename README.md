@@ -1,40 +1,49 @@
 # Grant Employability Report Application (GERA)
 
-<img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/logo.png" width="250" align="right">
+<img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/logo.png" width="120" align="right">
 
 A lightweight desktop application that generates Visual Employability Reports from student data
-* Highly performant and compatible with all major operating systems (just in case)
-* Powerful Views and Patches system for custom automation
-* Simple design
+- Highly performant and compatible with all major operating systems (just in case)
+- [Powerful Views and Patches system](#views-and-patches-system) for custom automation
+- Simple design
 
 
 
 ## Table of Contents
-* For Users
-  * [Installation](#installation)
-    * [Setting up MS Access Macro](#set-up-ms-access-macro)
-  * How to Use
-  * Configuration
-    * Custom Views and Patches system
-  * FAQ
-  * Troubleshooting
-  * FERPA Compliance
-* For Developers
-  * Tech Stack
-  * Cloning & Build Process
-  * Code Documentation
-    * Understanding the Configuration System
-    * Table Fixer Process
-    * PDF Generation Process
+- For Users
+  - [Installation](#installation)
+    - [Setting up MS Access Macro](#set-up-ms-access-macro)
+  - [How to Use](#how-to-use)
+    - [Avoiding Conflicts with OneDrive](#avoiding-conflicts-with-onedrive)
+  - Configuration
+    - Custom Views and Patches system
+  - FAQ
+  - Troubleshooting
+  - FERPA Compliance
+- For Developers
+  - Tech Stack
+  - Cloning & Build Process
+  - Code Documentation
+    - Understanding the Configuration System
+    - Table Fixer Process
+    - PDF Generation Process
 
 
 ## Installation
-**TODO: add stuff here**
+
+Simply run the GERA installer exe and follow the wizard's instructions
 
 ## Set Up MS Access Macro
 
+#### Import Method
+
+Use the modified Access Database which should include a button named "Export To CSV"
+
+#### Manual Method
+
 Copy the following code and put it into Access
-**TODO: explain**
+
+--TODO: explain--
 
 ```
 Option Compare Database
@@ -43,7 +52,7 @@ Option Explicit
 Public Function exportAsCSV()
 
 On Error GoTo Err_ExportDatabaseObjects
-     
+
 Dim db As Database
 Dim td As TableDef
 Dim d As Document
@@ -52,7 +61,7 @@ Dim i As Integer
 Dim sExportLocation As String
 
 Set db = CurrentDb()
-     
+
     sExportLocation = GetFolder()
 
     For Each td In db.TableDefs 'Tables
@@ -75,7 +84,7 @@ Exit Function
 Err_ExportDatabaseObjects:
 MsgBox Err.Number & " - " & Err.Description
 Resume Exit_ExportDatabaseObjects
-     
+
 
 End Function
 
@@ -94,3 +103,25 @@ NextCode:
     Set fldr = Nothing
 End Function
 ```
+
+## How to Use
+
+Open Access and use the Export To CSV button, selecting the folder to be your workspace. Make sure it [isn't set to sync to OneDrive](#avoiding-conflicts-with-onedrive)
+
+### Avoiding Conflicts with OneDrive
+
+GERA creates and deletes lots of temporary files in the workspace directory while it is running a task. OneDrive will attempt to sync the changes to all of these files, which will quickly overwhelm it. Unfortunately, there isn't much an application like GERA can do to remedy this, so the only solution is to **not select a folder that is backed up by OneDrive** when choosing your workspace.
+
+If any of the following icons below show up next to your folder, then it is being backed up by OneDrive and should **not** be used with GERA.
+
+<img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/onedriveicons.jpg" width="120">
+
+If, for example, your desired workspace folder is in the `Documents` folder but is syncing with OneDrive, you may be at the path:
+
+`C:\Users\USERNAME\OneDrive\Documents\` - Notice the "OneDrive" here
+
+Whereas this path will probably not be set up to sync:
+
+`C:\Users\USERNAME\Documents\` - Notice there's no "OneDrive"
+
+Ultimately, your system will probably differ in some way, so you might just have to explore to find a place that OneDrive isn't syncing to. If all else fails, try creating a workspace at the root. (`C:\Workspace\` for example)
