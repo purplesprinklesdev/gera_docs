@@ -116,15 +116,25 @@ Now you have the opportunity to look through the data in the five input tables a
 
 Now it's time to open GERA. Select the same folder you exported the tables from Excel into, and pick a quarter. Choosing the right quarter for your data is very important. Below are all the features that take quarters into account:
 
-- Preserving past manual corrections. Manual corrections will be preserved if they are on a previous quarter's value. Selecting First Quarter will not preserve any corrections, selecting Third will preserve ones in Qtr1 and Qtr2 columns
+- [Preserving past manual corrections](#preserving-manual-corrections). Manual corrections will be preserved if they are on a previous quarter's value. Selecting First Quarter will not preserve any corrections, selecting Third will preserve ones in Qtr1 and Qtr2 columns
 - Employability Score recalculation. All previous quarters and the current quarter will have their employability scores recalculated. The `OverallEmployabilityScore` column will average the employability scores in previous quarters and the current quarter, but not future ones.
 - PDFs. Impacts the naming of PDFs, the number of bars each graph has, and the number of rows the table has.
 
-Even if your tables have more data filled in than your selected quarter would suggest, GERA will handle it and ignore the "future" data. This means you can redo past quarters even when newer data is present. The only problem this could cause is that manual corrections will be overridden. Create a backup of the `CampusDataReport.csv` file if there were manual corrections you don't want to be overridden. For more info, see [manual correction]()
+Even if your tables have more data filled in than your selected quarter would suggest, GERA will handle it and ignore the "future" data. This means you can redo past quarters even when newer data is present. The only problem this could cause is that manual corrections will be overridden. Create a backup of the `CampusDataReport.csv` file if there were manual corrections you don't want to be overridden. For more info, see [manual correction](#preserving-manual-corrections).
 
 ### Step 2: Table Fixer
 
+The Table Fixer step is really a collection of processes that build off of GrantEMP's basic views by automating frequent actions. It uses SQL to interface with the tables it recieves from the workspace folder, meaning the process is highly extensible. Understanding how to use Table Fixer and its [Custom Views and Patches system](#custom-views-and-patches) to its fullest requires knowing the **order** these actions will happen in.
+
+1. Create SQL Tables from CSV files.
+2. [Process Custom Patches](#custom-views-and-patches)
+3. [Copy Manual Corrections from Past Output](#preserving-manual-corrections)
+4. Recalculate Employability Scores
+5. Create Views and Export them to CSV
+
 ##### Preserving Manual Corrections
+
+GERA will preserve manual corrections made to the `CampusDataReport.csv` file, if the changes are made in columns of a past quarter. For example, you run First Quarter and then manually change some scores. Then you run Second Quarter and the changes will remain. However, if you decided to run First Quarter then the changes would be overridden.
 
 ##### Employability Score Recalculation
 
