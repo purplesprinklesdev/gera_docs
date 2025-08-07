@@ -4,7 +4,7 @@
 
 A lightweight desktop application that generates Visual Employability Reports from student data
 - Highly performant and compatible with all major operating systems (just in case)
-- [Powerful Views and Patches system](#views-and-patches-system) for custom automation
+- [Views and Patches system](#views-and-patches-system) for custom automation
 - Simple design
 
 
@@ -16,7 +16,7 @@ A lightweight desktop application that generates Visual Employability Reports fr
   - [How to Use](#how-to-use)
     - [Avoiding Conflicts with OneDrive](#avoiding-conflicts-with-onedrive)
   - Configuration
-    - Custom Views and Patches system
+    - Views and Patches system
   - FAQ
   - Troubleshooting
   - FERPA Compliance
@@ -31,15 +31,13 @@ A lightweight desktop application that generates Visual Employability Reports fr
 
 ## Installation
 
-Simply run the GERA installer exe and follow the wizard's instructions
+Simply run the GERA installer exe and follow the wizard's instructions. Launch either through a desktop shortcut, or by searching in the Start menu.
 
 ## Set Up MS Access Macro
 
-#### Import Method
+The modified Access Database which should include a button named "Export To CSV". If you see that button on the main menu, there's nothing else you have to do.
 
-Use the modified Access Database which should include a button named "Export To CSV"
-
-#### Manual Method
+#### Create macro manually
 
 Copy the following code and put it into Access
 
@@ -106,7 +104,31 @@ End Function
 
 ## How to Use
 
-Open Access and use the Export To CSV button, selecting the folder to be your workspace. Make sure it [isn't set to sync to OneDrive](#avoiding-conflicts-with-onedrive)
+GERA builds off of functionality already a part of the GrantEMP Access program. Start by importing data from the HCCA servers into Access. Then use the provided Export to CSV script to get the data ready for GERA.
+
+### Exporting
+
+Open Access and use the Export To CSV button, then select the folder you want to be your workspace. Make sure it [isn't set to sync to OneDrive](#avoiding-conflicts-with-onedrive).
+
+Now you have the opportunity to look through the data in the five input tables and correct values if neccessary, but **it's recommended to wait until GERA has run Step 2: Table Fixer before doing manual corrections.**
+
+### Step 1: Select Workspace and Quarter
+
+Now it's time to open GERA. Select the same folder you exported the tables from Excel into, and pick a quarter. Choosing the right quarter for your data is very important. Below are all the features that take quarters into account:
+
+- Preserving past manual corrections. Manual corrections will be preserved if they are on a previous quarter's value. Selecting First Quarter will not preserve any corrections, selecting Third will preserve ones in Qtr1 and Qtr2 columns
+- Employability Score recalculation. All previous quarters and the current quarter will have their employability scores recalculated. The `OverallEmployabilityScore` column will average the employability scores in previous quarters and the current quarter, but not future ones.
+- PDFs. Impacts the naming of PDFs, the number of bars each graph has, and the number of rows the table has.
+
+Even if your tables have more data filled in than your selected quarter would suggest, GERA will handle it and ignore the "future" data. This means you can redo past quarters even when newer data is present. The only problem this could cause is that manual corrections will be overridden. Create a backup of the `CampusDataReport.csv` file if there were manual corrections you don't want to be overridden. For more info, see [manual correction]()
+
+### Step 2: Table Fixer
+
+##### Preserving Manual Corrections
+
+##### Employability Score Recalculation
+
+##### Custom Views and Patches
 
 ### Avoiding Conflicts with OneDrive
 
