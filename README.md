@@ -10,7 +10,7 @@ A lightweight desktop application that generates Visual Employability Reports fr
 
 This application is specifically designed for use in combination with Grant Career Center's existing proprietary technology and is *not* a broad student data processing solution. This documentation is intended for Grant employees and future maintainers of the software.
 
-GERA's code is property of Grant Career Center.
+GERA's source code is property of Grant Career Center.
 
 ## Table of Contents
 - For Users
@@ -24,10 +24,16 @@ GERA's code is property of Grant Career Center.
       - [Employability Score Recalculation](#employability-score-recalculation)
       - [Custom Views and Patches](#custom-views-and-patches)
     - [Step 3: Generate PDFs](#step-3-generate-pdfs)
+      - [Chrome Requirement](#chrome-requirement)
     - [Avoiding Conflicts with OneDrive](#avoiding-conflicts-with-onedrive)
     - [Avoiding Conflicts with Excel](#avoiding-conflicts-with-excel)
-  - Configuration
-    - Views and Patches system
+  - [Configuration](#configuration)
+    - [Logging](#logging)
+    - [PDFs and Charts](#pdfs-and-charts)
+    - [Simple Graph Style Changes](#simple-graph-style-changes)
+    - [Grade Category Distribution](#grade-category-distribution)
+    - [Views and Patches System](#views-and-patches-system)
+    - [Resetting Configuration](#resetting-configuration)
   - Troubleshooting
   - FERPA Compliance
 - For Developers
@@ -92,7 +98,7 @@ GERA will preserve manual corrections made to the `CampusDataReport.csv` file, i
 - Last Name
 - Grade Level
 - Homeroom Teacher
-  
+
 ##### The following columns are preserved, for each quarter
 - Attendance Score
 - Behavior Score
@@ -120,7 +126,13 @@ For technical information, see the developers section on the [Views and Patches 
 
 ## Step 3: Generate PDFs
 
-*TODO*
+<img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/pdfExample.jpg" width="900" align="left">
+
+GERA will create a Employability Report PDF for every student in CampusDataReport. There must exist a `CampusDataReport.csv` in the `OutputTables` folder and a `StudentDemographic.csv` in the workspace folder in order to generate PDFs. **PDF Generation takes a long time to complete. Do not close GERA or power off your computer until it is finished.** Each PDF will take about 1-2s, and the completion time scales linearly.
+
+#### Chrome Requirement
+
+An error will display if you attempt to generate PDFs without a valid install of Chrome or Chromium. If you are recieving this error despite Chrome being installed, it might be the case that GERA cannot find your Chrome executable because it isn't in the default location. Try uninstalling Chrome and reinstalling in the default location. Chrome is used to render an HTML file and export a PDF. The background Chrome process will not attempt to connect to the internet. For more information about GERA's use of Chrome, see the [Proof of FERPA Compliance].
 
 ### Avoiding Conflicts with OneDrive
 
@@ -154,4 +166,36 @@ Once again, don't follow Excel's instructions if this pops up. Simply save to th
 
 If Excel ever asks to convert numbers to scientific notation, or some other kind of value conversion, **DO NOT** let it. GERA is not able to read numbers in formats like scientific notation or percentages.
 
-**Most Importantly**, close Excel before running Step 2 or 3 on GERA. Much like OneDrive, if Excel has one of the GERA tables open, will mess with GERA's ability to read and write to files.
+# Configuration
+
+Configuration files can be accessed by clicking the "Open App Data Folder" button in GERA and opening the "config" folder. After the configuration is changed, you must restart GERA for the changes to take effect.
+
+## Logging
+
+GERA will automatically log important events, and these logs are incredibly useful for troubleshooting. Logging is off by default, but can be enabled by setting the `logging` key in `config.json` to `true`. Verbose logs will include messages marked `DEBUG` and should only be enabled if the normal logs did not give enough information.
+
+## PDFs and Charts
+
+The template used for the PDFs is the `pdf_template.html` file. If you want to make changes, just make sure not to change anything that is between two `$` characters, as these are used to insert values into the PDF. The graphs follow styling values listed in the `config.json` file. Test your style changes appropriately to make sure elements don't fall off the page. If you accidentally break the PDFs because of style changes and want to go back to default, just delete `config.json` and run GERA.
+
+`paperType` determines if the PDFs use US Letter or A4 (Metric) paper size. The default is Letter.
+
+## Simple Graph Style Changes
+
+All of the following changes can be made within the `config.json` file.
+
+The colors of all charts besides overall employability fall under the `grayscaleColors` array. The last chart, corresponding to the employability scores, has its own color set under `employabilityColors`. Each color is an array of three integers between 0 and 256 corresponding to RGB values. To pick a new color, use a color picker website that displays RGB values which can then be copied into the config file. There must be exactly four colors in `grayscaleColors` and `employabilityColors`.
+
+In the `chartTitles` object you can define the title of each chart. Entering a name that is very long could lead to the text getting cut off by the borders of the chart.
+
+Changing the size or spacing parameters of the charts is not recommended, because it could easily lead to the charts becoming uncentered or falling off the page.
+
+## Grade Category Distribution
+
+`gradeCategoryPercentages` determines how Employability Scores are calculated. Since they are recalculated every time Table Fixer is ran, this setting effectively overrides the same setting in GrantEMP. The sum of all the values must equal 100.
+
+## Resetting Configuration
+
+To reset your configuration to default, simply delete the file you would like to be reset. Alternatively, if all config files should be reset, delete the entire config folder. Then, run GERA. The deleted files will now be recreated and reset to defaults.
+
+## Views and Patches System
