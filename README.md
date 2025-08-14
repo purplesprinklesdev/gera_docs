@@ -123,7 +123,7 @@ Creating custom SQL views and patches can help automate tasks that follow clear 
 
 ## Step 3: Generate PDFs
 
-<img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/pdfExample.jpg" width="900" align="left">
+<img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/pdfExample.jpg" width="900">
 
 GERA will create a Employability Report PDF for every student in CampusDataReport. There must exist a `CampusDataReport.csv` in the `OutputTables` folder and a `StudentDemographic.csv` in the workspace folder in order to generate PDFs. **PDF Generation takes a long time to complete. Do not close GERA or power off your computer until it is finished.** Each PDF will take about 1-2s, and the completion time scales linearly.
 
@@ -155,7 +155,7 @@ Excel can be used to edit the .csv files GERA exports. However, Excel will compl
 
 <img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/excel2.jpg" width="600">
 
-You should **NOT** follow Excel's advice here. If you save your manual changes to a .xlsx file, GERA will not be able to detect and preserve them. It's best to click "Do Not Show Again" here and use Ctrl-S to save the spreadsheet to the same location when you're done.
+You should **NOT** follow Excel's advice here. If you save your manual changes to a .xlsx file, GERA will not be able to detect and preserve them. It's best to click "Don't Show Again" here and use Ctrl+S to save the spreadsheet to the same location when you're done.
 
 <img src="https://github.com/purplesprinklesdev/gera_docs/blob/main/resources/excel1.jpg" width="600">
 
@@ -169,17 +169,17 @@ Configuration files can be accessed by clicking the "Open App Data Folder" butto
 
 Default configuration files (the ones that were already there when GERA was installed) will be reacquired if they are not found. (deleted or renamed) However, their contents can be modified. Editing the default files is discouraged unless absolutely necessary, as it could break important functionality. If you want to undo your changes to a default file, simply delete the file and run GERA again.
 
-## Logging
+### Logging
 
 GERA will automatically log important events, and these logs are incredibly useful for troubleshooting. Logging is off by default, but can be enabled by setting the `logging` key in `config.json` to `true`. Verbose logs will include messages marked `DEBUG` and should only be enabled if the normal logs did not give enough information.
 
-## PDFs and Charts
+### PDFs and Charts
 
 The template used for the PDFs is the `pdf_template.html` file. If you want to make changes, just make sure not to change anything that is between two `$` characters, as these are used to insert values into the PDF. The graphs follow styling values listed in the `config.json` file. Test your style changes appropriately to make sure elements don't fall off the page. If you accidentally break the PDFs because of style changes and want to go back to default, just delete `config.json` and run GERA.
 
 `paperType` determines if the PDFs use US Letter or A4 (Metric) paper size. The default is Letter.
 
-## Simple Graph Style Changes
+### Simple Graph Style Changes
 
 All of the following changes can be made within the `config.json` file.
 
@@ -189,15 +189,15 @@ In the `chartTitles` object you can define the title of each chart. Entering a n
 
 Changing the size or spacing parameters of the charts is not recommended, because it could easily lead to the charts becoming uncentered or falling off the page.
 
-## Grade Category Distribution
+### Grade Category Distribution
 
 `gradeCategoryPercentages` determines how Employability Scores are calculated. Since they are recalculated every time Table Fixer is ran, this setting effectively overrides the same setting in GrantEMP. The sum of all the values must equal 100.
 
-## Resetting Configuration
+### Resetting Configuration
 
 To reset your configuration to default, simply delete the file you would like to be reset. Alternatively, if all config files should be reset, delete the entire config folder. Then, run GERA. The deleted files will now be recreated and reset to defaults.
 
-## Views and Patches
+### Views and Patches
 
 The "views" and "patches" folder contain `.sql` files which give GERA additional functionality during the Table Fixer process. They are written in SQL, where patches should be a statement that is executed, and views should be a query that will be preceded by `CREATE VIEW view_name AS {}`, where your view will be inserted into the `{}`. GERA uses SQLite, and its complete feature set for in-memory databases should be available.
 
