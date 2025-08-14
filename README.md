@@ -5,10 +5,10 @@
 A lightweight desktop application that generates Visual Employability Reports from student data
 - Highly performant Rust backend to handle data between file system and an In-Memory SQLite database
 - Tauri desktop app with a simple SvelteKit frontend
-- Powerful [Views and Patches system](#views-and-patches-system) for user-defined automation
+- Powerful [Views and Patches system](#custom-views-and-patches) for user-defined automation
 - Fully offline and FERPA compliant
 
-This application is specifically designed for use in combination with Grant Career Center's existing proprietary technology and is *not* a broad student data processing solution. This documentation is intended for Grant employees and future maintainers of the software.
+This application is specifically designed for use in combination with Grant Career Center's existing proprietary technology and is *not* a broad student data processing solution. This documentation is intended for Grant employees using GERA and future maintainers of the software.
 
 GERA's source code is property of Grant Career Center.
 
@@ -34,8 +34,7 @@ GERA's source code is property of Grant Career Center.
     - [Grade Category Distribution](#grade-category-distribution)
     - [Views and Patches System](#views-and-patches-system)
     - [Resetting Configuration](#resetting-configuration)
-  - Troubleshooting
-  - FERPA Compliance
+  - [FERPA Compliance](#ferpa-compliance)
 - For Developers
   - Tech Stack
   - Cloning & Build Process
@@ -91,7 +90,7 @@ Understanding how to use Table Fixer and its [Custom Views and Patches system](#
 
 #### Preserving Manual Corrections
 
-GERA will preserve manual corrections made to the `CampusDataReport.csv` file, if the changes are made in columns of a past quarter. For example: you run First Quarter and then manually change some scores. Then you run Second Quarter and the changes will remain. However, if you instead decided to run First Quarter again then the changes would be overridden. When editing `CampusDataReport.csv`, ensure that Excel does not [change the file type or reformat columns]().
+GERA will preserve manual corrections made to the `CampusDataReport.csv` file, if the changes are made in columns of a past quarter. For example: you run First Quarter and then manually change some scores. Then you run Second Quarter and the changes will remain. However, if you instead decided to run First Quarter again then the changes would be overridden. When editing `CampusDataReport.csv`, ensure that Excel does not [change the file type or reformat columns](#avoiding-conflicts-with-excel).
 
 ##### The following columns will preserve manual corrections:
 - First Name
@@ -110,19 +109,17 @@ The other columns in `CampusDataReport.csv` are the Employability Scores, which 
 
 #### Employability Score Recalculation
 
-After manual changes are copied, Employability Scores are recalculated. This takes the form of a weighted average for each quarter's Employability Score. The weights are defined under `gradeCategoryPercentages` in `config.json` in the [Configuration Folder](). Only the current quarter and past quarters will be recalculated. The Overall Employability Score is a simple average of each quarter's Employability Score, but this also will only average the Employability Scores in the current and past quarters.
+After manual changes are copied, Employability Scores are recalculated. This takes the form of a weighted average for each quarter's Employability Score. The weights are defined under `gradeCategoryPercentages` in `config.json` in the [Configuration Folder](#configuration). Only the current quarter and past quarters will be recalculated. The Overall Employability Score is a simple average of each quarter's Employability Score, but this also will only average the Employability Scores in the current and past quarters.
 
 Because of score recalculation, there is no need to do manual corrections for Employability Scores.
 
 #### Custom Views and Patches
 
-Creating custom SQL views and patches can help automate tasks that follow clear patterns. Views should be palced in the `views` folder in the [Configuration Folder](), and Patches should be placed in the `patches` folder. Both views and patches must be `.sql` files. If you're wondering about the exact feature set available for views and patches, GERA uses [SQLite](https://sqlite.org/).
+Creating custom SQL views and patches can help automate tasks that follow clear patterns. Views should be palced in the `views` folder in the [Configuration Folder](#configuration), and Patches should be placed in the `patches` folder. Both views and patches must be `.sql` files. If you're wondering about the exact feature set available for views and patches, GERA uses [SQLite](https://sqlite.org/).
 
 **Patches** in practice have no limits, but generally should be used to overwrite values in the five base tables that come from GrantEMP. This is because CampusDataReport and the other output files are all views, not tables. Changing values in CampusDataReport, for example, actually requires overriding values in StudentEmployabilityData or StudentDemographic, depending on the column. `LabProfScoreCopy.sql`, which copies Professional Skills Score 1 to Professional Skills Score 2 if Professional Skills Score 2 is zero, is a patch that comes with GERA and serves as a good example of what patches are capable of. Changes made by a patch will be overridden if there is a manual correction at that value.
 
 **Views** are more limited than patches, but GERA will handle the export of views to CSV files. Views should be in the form of a SELECT query which takes a collection of columns from multiple of the base tables. In addition, each column can use expressions and SQL methods to transform data. `CampusDataReportByTeacher.sql`, which comes with GERA, is a good example of the tools available for creating new views.
-
-For technical information, see the developers section on the [Views and Patches system]().
 
 ## Step 3: Generate PDFs
 
@@ -132,7 +129,7 @@ GERA will create a Employability Report PDF for every student in CampusDataRepor
 
 #### Chrome Requirement
 
-An error will display if you attempt to generate PDFs without a valid install of Chrome or Chromium. If you are recieving this error despite Chrome being installed, it might be the case that GERA cannot find your Chrome executable because it isn't in the default location. Try uninstalling Chrome and reinstalling in the default location. Chrome is used to render an HTML file and export a PDF. The background Chrome process will not attempt to connect to the internet. For more information about GERA's use of Chrome, see the [Proof of FERPA Compliance].
+An error will display if you attempt to generate PDFs without a valid install of Chrome or Chromium. If you are recieving this error despite Chrome being installed, it might be the case that GERA cannot find your Chrome executable because it isn't in the default location. Try uninstalling Chrome and reinstalling in the default location. Chrome is used to render an HTML file and export a PDF. The background Chrome process will not attempt to connect to the internet. For more information about GERA's use of Chrome, see the [Proof of FERPA Compliance](#ferpa-compliance).
 
 ### Avoiding Conflicts with OneDrive
 
@@ -170,6 +167,8 @@ If Excel ever asks to convert numbers to scientific notation, or some other kind
 
 Configuration files can be accessed by clicking the "Open App Data Folder" button in GERA and opening the "config" folder. After the configuration is changed, you must restart GERA for the changes to take effect.
 
+Default configuration files (the ones that were already there when GERA was installed) will be reacquired if they are not found. (deleted or renamed) However, their contents can be modified. Editing the default files is discouraged unless absolutely necessary, as it could break important functionality. If you want to undo your changes to a default file, simply delete the file and run GERA again.
+
 ## Logging
 
 GERA will automatically log important events, and these logs are incredibly useful for troubleshooting. Logging is off by default, but can be enabled by setting the `logging` key in `config.json` to `true`. Verbose logs will include messages marked `DEBUG` and should only be enabled if the normal logs did not give enough information.
@@ -198,4 +197,16 @@ Changing the size or spacing parameters of the charts is not recommended, becaus
 
 To reset your configuration to default, simply delete the file you would like to be reset. Alternatively, if all config files should be reset, delete the entire config folder. Then, run GERA. The deleted files will now be recreated and reset to defaults.
 
-## Views and Patches System
+## Views and Patches
+
+The "views" and "patches" folder contain `.sql` files which give GERA additional functionality during the Table Fixer process. They are written in SQL, where patches should be a statement that is executed, and views should be a query that will be preceded by `CREATE VIEW view_name AS {}`, where your view will be inserted into the `{}`. GERA uses SQLite, and its complete feature set for in-memory databases should be available.
+
+The default views in GERA will always be reacquired if they are deleted or renamed. They can be edited, however it is not recommended to edit `CampusDataReport.sql` because PDF generation relies on certain values being present.
+
+There is one default patch, `LabCopyToProfSkills.sql`. This patch copies ProfessionalSkillsScore1 (Lab Score) to ProfessionalSkillsScore2 (Academic Score) if the latter is 0. While this can't be disabled or deleted, you can effectively disable this patch by replacing the file's content with `SELECT * FROM StudentEmployabilityData LIMIT 1`. Patches have access to the data in all five base tables, and can overwrite the values in them. If the goal you want is to change the value in a view, like CampusDataReport, you should use the patch to change its corresponding value in its constituent tables. (StudentEmployabilityData and StudentDemographic) To find what the constituent tables of a view are, look at the tables names following the `FROM` and `JOIN` statements.
+
+# FERPA Compliance
+
+GERA is fully FERPA compliant as-is because it never connects to the internet and thus will never transfer student data off of the user's device. The only exception is if the user specifies a workspace path that leads to a network drive. Even in that case, GERA will only utilize the network in order to read from and write to the specified drive. It will never, under any circumstance, "phone home" to a remote server. This can be independently verified by reading GERA's and its dependencies' code. GERA's code is property of Grant Career Center and all of its dependencies are open source, meaning all of the code GERA will be running can be reviewed by Grant. The full list of dependencies can be found in the GERA code repo under `src-tauri/Cargo.toml`
+
+Chrome is one of a small set of browsers GERA can use to render PDFs. GERA interacts with Chrome through the headless_chrome crate, only using it for PDF rendering and never requesting an internet connection. Chrome is already used by staff at Grant, but just in case an open source alternative is required, Chromium can also be used for PDF rendering.
