@@ -15,7 +15,6 @@ GERA's source code is property of Grant Career Center.
 ## Table of Contents
 - For Users
   - [Installation](#installation)
-    - [Setting up MS Access Macro](#set-up-ms-access-macro)
   - [How to Use](#how-to-use)
     - [Export From Access](#export-from-access)
     - [Step 1: Select Workspace and Quarter](#step-1-select-workspace-and-quarter)
