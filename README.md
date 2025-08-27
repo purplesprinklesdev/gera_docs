@@ -209,3 +209,11 @@ There is one default patch, `LabCopyToProfSkills.sql`. This patch copies Profess
 GERA is fully FERPA compliant as-is because it never connects to the internet and thus will never transfer student data off of the user's device. The only exception is if the user specifies a workspace path that leads to a network drive. Even in that case, GERA will only utilize the network in order to read from and write to the specified drive. It will never, under any circumstance, "phone home" to a remote server. This can be independently verified by reading GERA's and its dependencies' code. GERA's code is property of Grant Career Center and all of its dependencies are open source, meaning all of the code GERA will be running can be reviewed by Grant. The full list of dependencies can be found in the GERA code repo under `src-tauri/Cargo.toml`
 
 Chrome is one of a small set of browsers GERA can use to render PDFs. GERA interacts with Chrome through the headless_chrome crate, only using it for PDF rendering and never requesting an internet connection. Chrome is already used by staff at Grant, but just in case an open source alternative is required, Chromium can also be used for PDF rendering.
+
+# For Developers
+If you're just a user of GERA, you can safely ignore everything below this. If you're a developer, this may have some important info for you.
+
+## Tech Stack
+GERA uses Tauri to build a high performance Rust app to multiple platforms easily. The frontend uses SvelteKit. For more information about the structure of a Tauri app, consult the [Tauri website](https://v2.tauri.app/).
+The app relies on several crates for core functionality. The full list is available in the `Cargo.toml` file. Here are some notable ones:
+
