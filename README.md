@@ -214,6 +214,30 @@ Chrome is one of a small set of browsers GERA can use to render PDFs. GERA inter
 If you're just a user of GERA, you can safely ignore everything below this. If you're a developer, this may have some important info for you.
 
 ## Tech Stack
-GERA uses Tauri to build a high performance Rust app to multiple platforms easily. The frontend uses SvelteKit. For more information about the structure of a Tauri app, consult the [Tauri website](https://v2.tauri.app/).
-The app relies on several crates for core functionality. The full list is available in the `Cargo.toml` file. Here are some notable ones:
 
+GERA uses Tauri to build a high performance Rust app with cross-platform support. The frontend uses SvelteKit. For more information about the structure of a Tauri app, consult the [Tauri website](https://v2.tauri.app/).
+The app relies on several crates for core functionality. The full list is available in the `src-tauri/Cargo.toml` file. Here are some notable ones:
+- [csv](https://crates.io/crates/csv) - read and write to csv files
+- [rusqlite](https://crates.io/crates/rusqlite) - manage local SQLite database
+- [plotters](https://crates.io/crates/plotters) - creates graphs
+- [headless_chrome](https://crates.io/crates/headless_chrome) - interface with chrome, used for PDF generation
+- [html2pdf](https://crates.io/crates/html2pdf) - uses headless_chrome to make PDF from a HTML file
+
+Svelte frontend code is located under `src/routes/+page.svelte`. Rust backend code is located under `src-tauri/src/`.
+
+## Cloning & Build Process
+
+Follow [this guide](https://v2.tauri.app/start/prerequisites/) on the Tauri site to install all of Tauri's prerequisites. `npm`, `npx`, and `cargo` **must** be added to the PATH if they are not already.
+
+After cloning the "gera" repo, run `npm install` on the base folder. (the folder that has both `src` and `src-tauri` in it) 
+
+Run `npx tauri dev` to do a test run of GERA. Run `npx tauri build` to build an executable. The .exe can be found in `target/release/bundle/nsis/`
+
+## Configuration
+
+*TODO*
+(if a dev wants to make a setting that is currently hardcoded into a configurable option)
+
+## Important Functions and Processes
+
+*TODO*
